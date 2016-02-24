@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClient;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsRequest;
@@ -27,11 +28,14 @@ public class UploadTweets {
 		if (domain == null) {
 			AWSCredentials credentials = null;
 			try {
-				credentials = new ProfileCredentialsProvider("default").getCredentials();
-			} catch (Exception e) {
-				throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
-						+ "Please make sure that your credentials file is at the correct "
-						+ "location (/home/rohitb/.aws/credentials), and is in valid format.", e);
+				credentials = new PropertiesCredentials(
+		       			UploadTweets.class.getResourceAsStream("AwsCredentials.properties"));
+		        } catch (Exception e) {
+		            throw new AmazonClientException(
+		                    "Cannot load the credentials from the credential profiles file. " +
+		                    "Please make sure that your credentials file is at the correct " +
+		                    "location, and is in valid format.",
+		                    e);
 			}
 			System.out.println(credentials.getAWSAccessKeyId());
 			domain = new AmazonCloudSearchDomainClient(credentials);
